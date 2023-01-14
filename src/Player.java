@@ -44,14 +44,12 @@ public  class Player {
 
             if(rowCheck || columnCheck) return true;
         }
-        if( firstDiagonalCheck || secondDiagonalCheck) return true;
-
-        return false;
+        return firstDiagonalCheck || secondDiagonalCheck;
     }
 
     public void play(){
         Scanner sc = new Scanner(System.in);
-        int x,y;
+        int x=0,y=0;
         Board board =Board.getInstance();
 
         System.out.println(playerType +"'s turn.");
@@ -61,11 +59,20 @@ public  class Player {
                 y =(int)(Math.random()*Board.SIZE);
             }while (!board.isValidCoordinates(x,y));
         }else{ // if (playerType ==PlayerType.HUMAN)
-            do{
-                System.out.println("Please enter valid coordinates");
-                x=sc.nextInt();
-                y= sc.nextInt();
-            }while (!board.isValidCoordinates(x,y));
+            boolean isInputValid=false;
+            while(!isInputValid || (!board.isValidCoordinates(x,y))){
+                try{
+                    System.out.println("Please enter valid coordinates.Numbers between 0 and 2. Also cell must be empty");
+                    x=sc.nextInt();
+                    y= sc.nextInt();
+                    isInputValid=true;
+                }catch (InputMismatchException e){
+                    System.out.println("Input is not an int");
+                }
+                finally {
+                    sc.nextLine(); // cleans up \n
+                }
+            }
         }
 
         this.markCell(x,y);
@@ -73,5 +80,5 @@ public  class Player {
 
     }
 
-
 }
+
